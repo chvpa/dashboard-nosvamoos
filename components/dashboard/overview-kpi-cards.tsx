@@ -1,0 +1,79 @@
+"use client";
+
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { formatDuration } from "@/lib/agent-aggregation";
+import type { OverviewKpis } from "@/lib/dashboard-aggregation";
+import { MessageSquare, DollarSign, CheckCircle, Clock } from "lucide-react";
+
+interface OverviewKpiCardsProps {
+  kpis: OverviewKpis;
+}
+
+export function OverviewKpiCards({ kpis }: OverviewKpiCardsProps) {
+  const formattedAmount = kpis.totalSalesAmount.toLocaleString("es", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
+
+  return (
+    <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+      <Card>
+        <CardHeader className="pb-1">
+          <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+            <MessageSquare className="size-3.5" />
+            Total conversaciones
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-2xl font-semibold tabular-nums">
+            {kpis.totalConversations}
+          </p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="pb-1">
+          <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+            <DollarSign className="size-3.5" />
+            Monto total ventas
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-2xl font-semibold tabular-nums">
+            {formattedAmount}
+          </p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="pb-1">
+          <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+            <CheckCircle className="size-3.5" />
+            Sesiones cerradas
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-2xl font-semibold tabular-nums">
+            {kpis.closedSessions}
+          </p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="pb-1">
+          <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+            <Clock className="size-3.5" />
+            T. prom. 1ª respuesta
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-2xl font-semibold tabular-nums">
+            {formatDuration(kpis.avgFirstResponseMs)}
+          </p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

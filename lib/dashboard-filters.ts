@@ -1,0 +1,126 @@
+import type { AgentMetricsItem, ChatWithMessagesResponse } from "@/types/botmaker";
+
+export interface AdditionalFilters {
+  agent: string;
+  typification: string;
+  tag: string;
+}
+
+export interface AdditionalFilterOptions {
+  agents: string[];
+  typifications: string[];
+  tags: string[];
+}
+
+export const DEFAULT_ADDITIONAL_FILTERS: AdditionalFilters = {
+  agent: "all",
+  typification: "all",
+  tag: "all",
+};
+
+export function buildAdditionalFilterOptions(
+  chats: ChatWithMessagesResponse[],
+  agentItems: AgentMetricsItem[] = [],
+): AdditionalFilterOptions {
+  const agentSet = new Set<string>();
+  const typificationSet = new Set<string>();
+  const tagSet = new Set<string>();
+
+  for (const item of agentItems) {
+    const agentName = item.agentName?.trim();
+    const typification = item.typification?.trim();
+    if (agentName) agentSet.add(agentName);
+    if (typification) typificationSet.add(typification);
+  }
+
+  for (const chat of chats) {
+    const fallbackAgent = chat.agentId?.trim();
+    if (fallbackAgent) agentSet.add(fallbackAgent);
+    for (const tag of chat.tags ?? []) {
+      const cleanTag = tag.trim();
+      if (cleanTag) tagSet.add(cleanTag);
+    }
+  }
+
+  return {
+    agents: Array.from(agentSet).sort((a, b) => a.localeCompare(b)),
+    typifications: Array.from(typificationSet).sort((a, b) =>
+      a.localeCompare(b),
+    ),
+    tags: Array.from(tagSet).sort((a, b) => a.localeCompare(b)),
+  };
+}
+
+export function buildChatMetadataMaps(
+  agentItems: AgentMetricsItem[],
+): {
+  agentNameByChatId: Map<string, string>;
+  typificationByChatId: Map<string, string>;
+  conversationLinkByChatId: Map<string, string>;
+} {
+  const agentNameByChatId = new Map<string, string>();
+  const typificationByChatId = new Map<string, string>();
+  const conversationLinkByChatId = new Map<string, string>();
+
+  for (const item of agentItems) {
+    if (!item.chatId) continue;
+
+    const agentName = item.agentName?.trim();
+    const typification = item.typification?.trim();
+    const conversationLink =
+      typeof item.conversationLink === "string"
+        ? item.conversationLink.trim()
+        : "";
+
+    if (agentName && !agentNameByChatId.has(item.chatId)) {
+      agentNameByChatId.set(item.chatId, agentName);
+    }
+    if (typification && !typificationByChatId.has(item.chatId)) {
+      typificationByChatId.set(item.chatId, typification);
+    }
+    if (conversationLink && !conversationLinkByChatId.has(item.chatId)) {
+      conversationLinkByChatId.set(item.chatId, conversationLink);
+    }
+  }
+
+  return { agentNameByChatId, typificationByChatId, conversationLinkByChatId };
+}
+
+export function chatMatchesAdditionalFilters(
+  chat: ChatWithMessagesResponse,
+  filters: AdditionalFilters,
+  metadata?: {
+    agentNameByChatId?: Map<string, string>;
+    typificationByChatId?: Map<string, string>;
+  },
+): boolean {
+  const hasAgentFilter = filters.agent !== "all";
+  const hasTypificationFilter = filters.typification !== "all";
+  const hasTagFilter = filters.tag !== "all";
+
+  if (!hasAgentFilter && !hasTypificationFilter && !hasTagFilter) {
+    return true;
+  }
+
+  if (hasTagFilter && !(chat.tags ?? []).includes(filters.tag)) {
+    return false;
+  }
+
+  if (hasAgentFilter) {
+    const agentName = metadata?.agentNameByChatId?.get(chat.chat.chatId);
+    const fallbackAgentId = chat.agentId?.trim();
+    const effectiveAgent = agentName || fallbackAgentId || "";
+    if (effectiveAgent !== filters.agent) {
+      return false;
+    }
+  }
+
+  if (hasTypificationFilter) {
+    const typification = metadata?.typificationByChatId?.get(chat.chat.chatId) ?? "";
+    if (typification !== filters.typification) {
+      return false;
+    }
+  }
+
+  return true;
+}

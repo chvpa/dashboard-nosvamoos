@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nos Vamoos - Dashboard Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+          --background: oklch(1.0000 0 0);
+          --foreground: oklch(0.3211 0 0);
+          --card: oklch(1.0000 0 0);
+          --card-foreground: oklch(0.3211 0 0);
+          --popover: oklch(1.0000 0 0);
+          --popover-foreground: oklch(0.3211 0 0);
+          --primary: oklch(0.6231 0.1880 259.8145);
+          --primary-foreground: oklch(1.0000 0 0);
+          --secondary: oklch(0.9670 0.0029 264.5419);
+          --secondary-foreground: oklch(0.4461 0.0263 256.8018);
+          --muted: oklch(0.9846 0.0017 247.8389);
+          --muted-foreground: oklch(0.5510 0.0234 264.3637);
+          --accent: oklch(0.9514 0.0250 236.8242);
+          --accent-foreground: oklch(0.3791 0.1378 265.5222);
+          --destructive: oklch(0.6368 0.2078 25.3313);
+          --destructive-foreground: oklch(1.0000 0 0);
+          --border: oklch(0.9276 0.0058 264.5313);
+          --input: oklch(0.9276 0.0058 264.5313);
+          --ring: oklch(0.6231 0.1880 259.8145);
+          --chart-1: oklch(0.6231 0.1880 259.8145);
+          --chart-2: oklch(0.5461 0.2152 262.8809);
+          --chart-3: oklch(0.4882 0.2172 264.3763);
+          --chart-4: oklch(0.4244 0.1809 265.6377);
+          --chart-5: oklch(0.3791 0.1378 265.5222);
+          --sidebar: oklch(0.9846 0.0017 247.8389);
+          --sidebar-foreground: oklch(0.3211 0 0);
+          --sidebar-primary: oklch(0.6231 0.1880 259.8145);
+          --sidebar-primary-foreground: oklch(1.0000 0 0);
+          --sidebar-accent: oklch(0.9514 0.0250 236.8242);
+          --sidebar-accent-foreground: oklch(0.3791 0.1378 265.5222);
+          --sidebar-border: oklch(0.9276 0.0058 264.5313);
+          --sidebar-ring: oklch(0.6231 0.1880 259.8145);
+          
+          --font-sans: Inter, sans-serif;
+          --font-serif: Source Serif 4, serif;
+          --font-mono: JetBrains Mono, monospace;
+          --radius: 0.375rem;
+          --tracking-normal: 0em;
+        }
+
+        .dark {
+          --background: oklch(0.2046 0 0);
+          --foreground: oklch(0.9219 0 0);
+          --card: oklch(0.2686 0 0);
+          --card-foreground: oklch(0.9219 0 0);
+          --popover: oklch(0.2686 0 0);
+          --popover-foreground: oklch(0.9219 0 0);
+          --primary: oklch(0.6231 0.1880 259.8145);
+          --primary-foreground: oklch(1.0000 0 0);
+          --secondary: oklch(0.2686 0 0);
+          --secondary-foreground: oklch(0.9219 0 0);
+          --muted: oklch(0.2393 0 0);
+          --muted-foreground: oklch(0.7155 0 0);
+          --accent: oklch(0.3791 0.1378 265.5222);
+          --accent-foreground: oklch(0.8823 0.0571 254.1284);
+          --destructive: oklch(0.6368 0.2078 25.3313);
+          --destructive-foreground: oklch(1.0000 0 0);
+          --border: oklch(0.3715 0 0);
+          --input: oklch(0.3715 0 0);
+          --ring: oklch(0.6231 0.1880 259.8145);
+          --chart-1: oklch(0.7137 0.1434 254.6240);
+          --chart-2: oklch(0.6231 0.1880 259.8145);
+          --chart-3: oklch(0.5461 0.2152 262.8809);
+          --chart-4: oklch(0.4882 0.2172 264.3763);
+          --chart-5: oklch(0.4244 0.1809 265.6377);
+          --sidebar: oklch(0.2046 0 0);
+          --sidebar-foreground: oklch(0.9219 0 0);
+          --sidebar-primary: oklch(0.6231 0.1880 259.8145);
+          --sidebar-primary-foreground: oklch(1.0000 0 0);
+          --sidebar-accent: oklch(0.3791 0.1378 265.5222);
+          --sidebar-accent-foreground: oklch(0.8823 0.0571 254.1284);
+          --sidebar-border: oklch(0.3715 0 0);
+          --sidebar-ring: oklch(0.6231 0.1880 259.8145);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--background);
+            min-height: 100vh;
+            color: var(--foreground);
+            letter-spacing: var(--tracking-normal);
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Syne', sans-serif;
+        }
+        
+        /* Utility Classes */
+        .text-foreground { color: var(--foreground); }
+        .text-muted { color: var(--muted-foreground); }
+        .text-primary { color: var(--primary); }
+        .text-chart-1 { color: var(--chart-1); }
+        .text-chart-2 { color: var(--chart-2); }
+        .text-chart-3 { color: var(--chart-3); }
+        
+        .chart-description {
+            color: var(--muted-foreground);
+            font-size: 0.75rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
+        }
+        
+        @media (min-width: 640px) {
+            .chart-description {
+                font-size: 0.875rem;
+                margin-bottom: 1rem;
+            }
+        }
+        
+        .glass-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+        }
+        
+        @media (max-width: 640px) {
+            .glass-card {
+                padding: 1rem !important;
+            }
+        }
+        
+        .glass-card-light {
+            background: var(--secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+        
+        .gradient-text {
+            color: var(--primary-foreground);
+        }
+        
+        .metric-card {
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px 0 rgb(0 0 0 / 0.1);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .metric-card:nth-child(1) { animation-delay: 0.1s; }
+        .metric-card:nth-child(2) { animation-delay: 0.2s; }
+        .metric-card:nth-child(3) { animation-delay: 0.3s; }
+        .metric-card:nth-child(4) { animation-delay: 0.4s; }
+        .metric-card:nth-child(5) { animation-delay: 0.5s; }
+        .metric-card:nth-child(6) { animation-delay: 0.6s; }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+            color: var(--foreground);
+        }
+        
+        @media (min-width: 640px) {
+            .section-title {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+        
+        @media (min-width: 640px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+        
+        .chart-container-large {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        @media (min-width: 640px) {
+            .chart-container-large {
+                height: 400px;
+            }
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        thead th {
+            background: var(--muted);
+            padding: 0.5rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            color: var(--muted-foreground);
+            white-space: nowrap;
+        }
+        
+        @media (min-width: 640px) {
+            thead th {
+                padding: 0.75rem;
+                font-size: 0.875rem;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            thead th {
+                padding: 1rem;
+            }
+        }
+        
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s ease;
+        }
+        
+        tbody tr:hover {
+            background: var(--muted);
+        }
+        
+        tbody td {
+            padding: 0.5rem;
+            font-size: 0.75rem;
+            white-space: nowrap;
+        }
+        
+        @media (min-width: 640px) {
+            tbody td {
+                padding: 0.75rem;
+                font-size: 0.875rem;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            tbody td {
+                padding: 1rem;
+            }
+        }
+        
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .badge-vendido {
+            background: var(--chart-1);
+            color: var(--primary-foreground);
+        }
+        
+        .badge-potable {
+            background: var(--chart-2);
+            color: var(--card);
+        }
+        
+        .badge-no-vendido {
+            background: var(--destructive);
+            color: var(--card);
+        }
+        
+        .badge-no-potable {
+            background: var(--muted);
+            color: var(--muted-foreground);
+        }
+        
+        .badge-alta {
+            background: var(--destructive);
+            color: var(--card);
+        }
+        
+        .badge-media {
+            background: var(--chart-3);
+            color: var(--card);
+        }
+        
+        .badge-baja {
+            background: var(--chart-1);
+            color: var(--primary-foreground);
+        }
+        
+        .pagination {
+            display: flex;
+            gap: 0.25rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        @media (min-width: 640px) {
+            .pagination {
+                gap: 0.5rem;
+            }
+        }
+        
+        .pagination button {
+            padding: 0.375rem 0.75rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--foreground);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+        
+        @media (min-width: 640px) {
+            .pagination button {
+                padding: 0.5rem 1rem;
+            }
+        }
+        
+        .pagination button:hover:not(:disabled) {
+            background: var(--muted);
+        }
+        
+        .pagination button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        
+        .pagination button.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--primary-foreground);
+        }
+        
+        .search-input {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0.75rem 1rem;
+            color: var(--foreground);
+            width: 100%;
+            max-width: 100%;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+        }
+        
+        @media (min-width: 640px) {
+            .search-input {
+                max-width: 400px;
+            }
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--ring);
+            box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 10%, transparent);
+        }
+        
+        .no-underline {
+            text-decoration: none;
+        }
+        
+        .search-input::placeholder {
+            color: var(--muted-foreground);
+        }
+        
+        .filter-select {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0.75rem 1rem;
+            color: var(--foreground);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+            width: 100%;
+        }
+        
+        @media (min-width: 640px) {
+            .filter-select {
+                width: auto;
+                min-width: 180px;
+            }
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--ring);
+            box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 10%, transparent);
+        }
+        
+        .heatmap-cell {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .heatmap-cell:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+        
+        @media (max-width: 640px) {
+            .heatmap-cell:hover {
+                transform: none;
+            }
+        }
+        
+        .loading {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen p-4 md:p-8">
+        <!-- Header -->
+        <header class="mb-8 animate__animated animate__fadeInDown">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div class="header-content">
+                    <!-- Logo -->
+                    <div id="logoContainer">
+                        <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 351 60"><path d="M9.02,56.07l-1.78-4.05-1.78,4.05h3.56ZM11.41,59.81c-.34.15-.74,0-.89-.35l-.89-2.03h-4.76l-.89,2.03c-.15.34-.55.5-.89.35-.34-.15-.5-.55-.35-.9l3.89-8.77c.11-.26.36-.41.63-.41.26,0,.51.15.63.41l3.89,8.77c.15.34,0,.74-.35.9" style="fill:#918f91;"/><path d="M34.22,55.38v1.95c0,.35-.07.6-.31.86-.97,1.12-2.39,1.8-3.92,1.8-2.81,0-5.09-2.31-5.09-5.17s2.28-5.17,5.09-5.17c1.48,0,2.83.63,3.77,1.68.12.12.19.28.19.46,0,.37-.3.67-.67.67-.19,0-.37-.08-.49-.21-.71-.8-1.7-1.29-2.81-1.29-2.06,0-3.73,1.73-3.73,3.86s1.67,3.86,3.73,3.86c1.15,0,2.18-.52,2.87-1.33v-1.35h-2.27c-.36,0-.65-.29-.65-.65s.29-.65.65-.65h2.95c.38,0,.68.3.68.68" style="fill:#918f91;"/><path d="M55.64,59.2c0,.36-.29.65-.65.65h-5.83c-.38,0-.68-.3-.68-.68v-8.69c0-.38.3-.68.68-.68h5.83c.36,0,.65.29.65.65s-.29.65-.65.65h-5.15v3.36h4.35c.36,0,.65.29.65.65s-.29.65-.65.65h-4.35v2.77h5.15c.36,0,.65.29.65.65" style="fill:#918f91;"/><path d="M78.83,50.48v8.69c0,.37-.3.68-.68.68-.16,0-.32-.06-.43-.16h0s-.02-.02-.02-.02c-.05-.04-.08-.09-.12-.14l-6.32-7.35v6.98c0,.38-.3.68-.68.68s-.68-.3-.68-.68v-8.69c0-.38.3-.68.68-.68.16,0,.32.06.43.16v-.02s6.46,7.48,6.46,7.48v-6.94c0-.37.3-.68.68-.68s.68.31.68.68" style="fill:#918f91;"/><path d="M92.84,54.83c0-2.85,2.31-5.17,5.14-5.17,1.48,0,2.83.63,3.77,1.68.11.12.19.28.19.46,0,.37-.3.67-.67.67-.19,0-.37-.08-.49-.21-.71-.8-1.7-1.29-2.81-1.29-2.09,0-3.79,1.73-3.79,3.86s1.69,3.86,3.79,3.86c1.11,0,2.1-.49,2.81-1.29.12-.13.29-.21.49-.21.37,0,.67.3.67.67,0,.18-.07.34-.19.46-.95,1.05-2.3,1.68-3.77,1.68-2.84,0-5.14-2.32-5.14-5.17" style="fill:#918f91;"/><path d="M115.96,59.17v-8.69c0-.38.3-.68.68-.68s.68.3.68.68v8.69c0,.38-.3.68-.68.68s-.68-.3-.68-.68" style="fill:#918f91;"/><path d="M137.49,56.07l-1.78-4.05-1.78,4.05h3.56ZM139.87,59.81c-.34.15-.74,0-.89-.35l-.89-2.03h-4.76l-.89,2.03c-.15.34-.55.5-.89.35-.34-.15-.5-.55-.35-.9l3.89-8.77c.11-.26.36-.41.63-.41.26,0,.51.15.63.41l3.89,8.77c.15.34,0,.74-.35.9" style="fill:#918f91;"/><path d="M180.68,54.83c0-2.05-1.65-3.72-3.69-3.72h-2.52v7.43h2.52c2.04,0,3.69-1.66,3.69-3.72M182.04,54.83c0,2.77-2.26,5.02-5.05,5.02h-3.2c-.38,0-.68-.3-.68-.68v-8.69c0-.38.3-.68.68-.68h3.2c2.79,0,5.05,2.25,5.05,5.02" style="fill:#918f91;"/><path d="M203.31,59.2c0,.36-.29.65-.65.65h-5.83c-.38,0-.68-.3-.68-.68v-8.69c0-.38.3-.68.68-.68h5.83c.36,0,.65.29.65.65s-.29.65-.65.65h-5.15v3.36h4.35c.36,0,.65.29.65.65s-.29.65-.65.65h-4.35v2.77h5.15c.36,0,.65.29.65.65" style="fill:#918f91;"/><path d="M241.34,59.5c-.11.26-.36.4-.63.41-.26,0-.51-.15-.63-.41l-3.89-8.77c-.15-.34,0-.74.35-.9.34-.15.74,0,.9.35l3.27,7.44,3.27-7.44c.15-.34.55-.5.9-.35.34.15.5.55.35.9l-3.89,8.77Z" style="fill:#918f91;"/><path d="M259.1,59.17v-8.69c0-.38.3-.68.68-.68s.68.3.68.68v8.69c0,.38-.3.68-.68.68s-.68-.3-.68-.68" style="fill:#918f91;"/><path d="M280.64,56.07l-1.78-4.05-1.78,4.05h3.56ZM283.02,59.81c-.34.15-.74,0-.89-.35l-.9-2.03h-4.76l-.89,2.03c-.15.34-.55.5-.9.35-.34-.15-.5-.55-.35-.9l3.89-8.77c.11-.26.36-.41.63-.41.26,0,.51.15.63.41l3.89,8.77c.15.34,0,.74-.35.9" style="fill:#918f91;"/><path d="M297.17,57.09c-.12-.43.2-.86.65-.86.31,0,.58.21.65.5.2,1.13,1.16,1.97,2.31,1.97,1.31,0,2.37-1.07,2.37-2.39v-5.81c0-.38.31-.68.68-.68s.68.3.68.68v5.81c0,2.04-1.67,3.7-3.73,3.7-1.77,0-3.25-1.23-3.61-2.91" style="fill:#918f91;"/><path d="M325.82,59.2c0,.36-.29.65-.65.65h-5.83c-.38,0-.68-.3-.68-.68v-8.69c0-.38.3-.68.68-.68h5.83c.36,0,.65.29.65.65s-.29.65-.65.65h-5.15v3.36h4.35c.36,0,.65.29.65.65s-.29.65-.65.65h-4.35v2.77h5.15c.36,0,.65.29.65.65" style="fill:#918f91;"/><path d="M340.38,58.96c-.2-.11-.34-.33-.34-.58,0-.49.52-.81.96-.59.87.45,1.95.89,3.04.89.89,0,2.55-.31,2.54-1.57,0-1.05-1.12-1.23-2.6-1.46-1.69-.26-3.83-.65-3.83-2.87,0-2.19,2.07-3.14,3.91-3.14,1.29,0,2.48.47,3.41,1.01.2.11.34.33.34.57,0,.36-.29.66-.66.66-.12,0-.22-.03-.32-.08-.77-.46-1.73-.85-2.84-.85-1.59,0-2.5.8-2.5,1.78,0,1.1,1.13,1.25,2.48,1.48,1.95.33,3.95.77,3.95,2.85,0,2.33-2.49,2.92-3.94,2.92-1.23,0-2.55-.44-3.61-1.04" style="fill:#918f91;"/><path d="M0,5.63C0,3.64.44,1.7,3.31,1.7c1.99,0,2.43.5,3.92,1.93l18.27,22.88V5.07c0-1.82,1.6-3.81,3.48-3.81,1.99,0,3.92,1.99,3.92,3.81v31.11c0,2.43-1.49,3.37-2.93,3.81-1.93,0-2.87-.44-4.47-1.93L7.23,14.86v21.33c0,2.43-1.49,3.81-3.48,3.81s-3.75-1.38-3.75-3.81V5.63Z" style="fill:#918f91;"/><path d="M59.41,7.56c-6.18,0-12.92,4.36-12.92,13.1s6.74,13.1,12.92,13.1,13.14-4.42,13.14-13.1-6.79-13.1-13.14-13.1M60.01,40.55c-10.21.44-20.81-6.35-20.81-19.89S49.8.38,60.01.38c9.66.5,19.77,7.18,19.77,20.28s-10.1,19.89-19.77,19.89" style="fill:#918f91;"/><path d="M85.85,10.05c1.27-10.72,17.45-12.65,25.07-6.8,3.75,3.04-.22,7.85-3.53,5.42-4.09-2.6-13.36-3.81-14.52,1.93-1.49,9.06,22.53,3.87,22.14,18.56-.39,14.03-20.7,14.37-28.32,8.07-1.82-1.49-1.77-3.92-.77-5.41,1.44-1.44,3.04-1.94,4.91-.39,4.53,3.09,16.18,5.41,17.01-2.43-.72-8.18-23.69-3.26-21.98-18.95" style="fill:#918f91;"/><path d="M133.83,37.51l-14.58-30.56c-2.15-4.36,4.36-7.96,6.79-3.37l4.91,11.11,6.35,14.59,6.24-14.59,4.91-11.11c2.21-4.2,8.61-1.55,6.74,3.04l-14.08,30.89c-1.27,3.48-5.19,4.31-7.29,0" style="fill:#e81f76;"/><path d="M179.82,25.96l-6.24-13.65-6.79,13.65h13.03ZM156.08,40c-1.77-.99-2.87-2.98-1.77-5.31l15.85-31c1.49-2.93,5.47-3.04,6.85,0l15.57,31c2.26,4.31-4.42,7.74-6.41,3.43l-2.43-4.86h-20.37l-2.38,4.86c-.88,1.88-2.93,2.27-4.91,1.88" style="fill:#e81f76;"/><path d="M204.95,15.74v20.44c0,2.43-1.99,3.81-3.97,3.81-1.77,0-3.31-1.38-3.31-3.81V5.07c0-2.87,2.43-3.81,3.31-3.81,1.6,0,2.54.94,3.48,1.99l12.15,16.41,12.59-17.02c1.82-2.27,6.29-1.38,6.29,2.43v31.11c0,2.43-1.55,3.81-3.31,3.81-1.99,0-3.53-1.38-3.53-3.81V15.74l-9.17,11.6c-1.99,2.43-4.47,2.43-6.29,0l-8.23-11.6Z" style="fill:#e81f76;"/><path d="M295.74,0c-4.31,0-8.69,1.16-12.34,3.5-1.52.97-2.91,2.15-4.13,3.53,1.65,2.49,2.87,5.36,3.49,8.61.21-.56.45-1.09.72-1.59,1.29-2.39,3.25-4.14,5.49-5.25,1.94-.96,4.07-1.44,6.15-1.44,6.51,0,13.47,4.47,13.47,13.42s-6.96,13.42-13.47,13.42c-2.07,0-4.2-.49-6.14-1.45-2.24-1.12-4.21-2.87-5.5-5.26-.27-.5-.51-1.02-.72-1.58-.57-1.51-.89-3.22-.89-5.13,0-.06,0-.13,0-.19h-.06c-.04-4.9-1.46-8.92-3.73-12.07-.38-.52-.78-1.02-1.21-1.5C272.94,2.62,267.18.29,261.56,0c-4.31,0-8.68,1.16-12.34,3.5-2.13,1.36-4.02,3.13-5.51,5.29-2.16,3.15-3.48,7.14-3.48,11.99s1.32,8.84,3.49,11.98c1.49,2.16,3.39,3.91,5.52,5.25,3.65,2.28,8.02,3.35,12.32,3.16,5.62,0,11.39-2.25,15.33-6.65-1.61-2.46-2.8-5.3-3.42-8.51-2.11,5.43-7.46,8.19-12.53,8.19-2.07,0-4.21-.49-6.14-1.45-2.24-1.12-4.21-2.87-5.5-5.26-1.01-1.86-1.61-4.09-1.61-6.71s.6-4.88,1.61-6.73c1.29-2.39,3.25-4.14,5.49-5.25,1.93-.96,4.07-1.44,6.15-1.44,5.07,0,10.43,2.72,12.54,8.16.59,1.54.93,3.29.93,5.26,0,4.84,1.32,8.84,3.49,11.98.06.09.13.18.2.27.38.52.78,1.02,1.2,1.5,1.22,1.37,2.61,2.53,4.13,3.48,3.65,2.28,8.02,3.35,12.32,3.16,9.9,0,20.26-6.97,20.26-20.39S305.65.51,295.74,0" style="fill:#e81f76;"/><path d="M321.84,10.05c1.27-10.72,17.45-12.65,25.07-6.8,3.75,3.04-.22,7.85-3.53,5.42-4.09-2.6-13.36-3.81-14.52,1.93-1.49,9.06,22.53,3.87,22.14,18.56-.39,14.03-20.7,14.37-28.32,8.07-1.82-1.49-1.77-3.92-.77-5.41,1.44-1.44,3.04-1.94,4.91-.39,4.53,3.09,16.18,5.41,17.01-2.43-.72-8.18-23.69-3.26-21.98-18.95" style="fill:#e81f76;"/></svg>
+                    </div>
+                </div>
+                <div class="flex gap-2 sm:gap-3">
+                    <button onclick="exportData()" class="glass-card-light px-3 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-semibold hover:bg-opacity-80 transition-all duration-300">
+                        📊 <span class="hidden sm:inline">Exportar</span><span class="sm:hidden">Exp.</span>
+                    </button>
+                    <button onclick="refreshData()" class="glass-card-light px-3 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-semibold hover:bg-opacity-80 transition-all duration-300">
+                        🔄 <span class="hidden sm:inline">Actualizar</span><span class="sm:hidden">Act.</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Chart Filters -->
+        <section class="mb-6 glass-card p-4 sm:p-6">
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-lg font-bold text-foreground">Filtros de Gráficos</h3>
+                    <button onclick="clearChartFilters()" class="text-sm px-3 py-1.5 glass-card-light hover:bg-opacity-80 transition-all rounded">
+                        🗑️ Limpiar Filtros
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-muted mb-1">Mes</label>
+                        <select id="filterMonth" class="filter-select w-full" onchange="applyChartFilters()">
+                            <option value="">Todos</option>
+                            <option value="01">Enero</option>
+                            <option value="02">Febrero</option>
+                            <option value="03">Marzo</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-muted mb-1">Agente</label>
+                        <select id="filterAgent" class="filter-select w-full" onchange="applyChartFilters()">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-muted mb-1">Destino</label>
+                        <select id="filterDestination" class="filter-select w-full" onchange="applyChartFilters()">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-muted mb-1">Estado</label>
+                        <select id="filterClosure" class="filter-select w-full" onchange="applyChartFilters()">
+                            <option value="">Todos</option>
+                            <option value="Vendido">Vendido</option>
+                            <option value="No Vendido">No Vendido</option>
+                            <option value="Potable">Potable</option>
+                            <option value="No Potable">No Potable</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-muted mb-1">Prioridad</label>
+                        <select id="filterPriority" class="filter-select w-full" onchange="applyChartFilters()">
+                            <option value="">Todas</option>
+                            <option value="Alta">Alta</option>
+                            <option value="Media">Media</option>
+                            <option value="Baja">Baja</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-muted mb-1">Tipo Paquete</label>
+                        <select id="filterPackageType" class="filter-select w-full" onchange="applyChartFilters()">
+                            <option value="">Todos</option>
+                            <option value="Vuelo + Hotel">Vuelo + Hotel</option>
+                            <option value="Solo Vuelo">Solo Vuelo</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KPI Cards -->
+        <section class="mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                <div class="glass-card metric-card p-4 sm:p-6">
+                    <div class="text-xs sm:text-sm font-semibold mb-1 sm:mb-2 text-muted">SESIONES TOTALES</div>
+                    <div class="text-2xl sm:text-3xl font-bold mb-0.5 sm:mb-1 text-foreground" id="totalSesiones">-</div>
+                    <div class="text-[10px] sm:text-xs text-chart-1">↑ 100% activas</div>
+                </div>
+                
+                <div class="glass-card metric-card p-4 sm:p-6">
+                    <div class="text-xs sm:text-sm font-semibold mb-1 sm:mb-2 text-muted">TASA CONVERSIÓN</div>
+                    <div class="text-2xl sm:text-3xl font-bold mb-0.5 sm:mb-1 text-chart-1" id="tasaConversion">-</div>
+                    <div class="text-[10px] sm:text-xs text-muted"><span id="ventasCerradas">-</span> Ventas Totales</div>
+                </div>
+                
+                <div class="glass-card metric-card p-4 sm:p-6">
+                    <div class="text-xs sm:text-sm font-semibold mb-1 sm:mb-2 text-muted">MENSAJES TOTALES</div>
+                    <div class="text-2xl sm:text-3xl font-bold mb-0.5 sm:mb-1 text-foreground" id="totalMensajes">-</div>
+                    <div class="text-[10px] sm:text-xs text-chart-2" id="promedioMensajes">↑ - por sesión</div>
+                </div>
+                
+                <div class="glass-card metric-card p-4 sm:p-6">
+                    <div class="text-xs sm:text-sm font-semibold mb-1 sm:mb-2 text-muted">PASAJEROS PROM.</div>
+                    <div class="text-2xl sm:text-3xl font-bold mb-0.5 sm:mb-1 text-foreground" id="promedioPasajeros">-</div>
+                    <div class="text-[10px] sm:text-xs text-muted">Por reserva</div>
+                </div>
+                
+                <div class="glass-card metric-card p-4 sm:p-6">
+                    <div class="text-xs sm:text-sm font-semibold mb-1 sm:mb-2 text-muted">AGENTE TOP</div>
+                    <div class="text-lg sm:text-xl font-bold mb-0.5 sm:mb-1 text-foreground" id="agenteTop">-</div>
+                    <div class="text-[10px] sm:text-xs text-chart-3" id="ventasAgenteTop">- ventas</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Temporal Analysis Section -->
+        <section class="mb-12">
+            <h2 class="section-title">📅 Análisis Temporal</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="glass-card p-6 lg:col-span-2">
+                    <h3 class="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-foreground">Sesiones por Fecha (Últimos 7 días)</h3>
+                    <p class="chart-description">Muestra la cantidad de sesiones de contacto registradas en los últimos 7 días, permitiendo identificar tendencias diarias de actividad.</p>
+                    <div class="chart-container">
+                        <canvas id="chartSesionesFecha"></canvas>
+                    </div>
+                </div>
+                
+                <div class="glass-card p-6">
+                    <h3 class="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-foreground">Horarios Populares</h3>
+                    <p class="chart-description">Visualiza la distribución de consultas a lo largo del día (0-24h), identificando las horas pico de actividad de los clientes.</p>
+                    <div id="heatmapContainer">
+                        <!-- Heatmap will be generated here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sales Analysis Section -->
+        <section class="mb-12">
+            <h2 class="section-title">💰 Análisis de Ventas</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="glass-card p-6">
+                    <h3 class="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-foreground">Estado de Cierre</h3>
+                    <p class="chart-description">Muestra la distribución de conversaciones según su estado final: Vendido, Potable, No Vendido y No Potable.</p>
+                    <div class="chart-container">
+                        <canvas id="chartCierreConversacion"></canvas>
+                    </div>
+                </div>
+                
+                <div class="glass-card p-6">
+                    <h3 class="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-foreground">Rendimiento por Agente</h3>
+                    <p class="chart-description">Compara el rendimiento de cada agente mostrando ventas cerradas vs no vendidas (incluye No Vendido, No Potable y Potable).</p>
+                    <div class="chart-container">
+                        <canvas id="chartAgentes"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Analysis Section -->
+        <section class="mb-12">
+            <h2 class="section-title">🌎 Análisis de Productos</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="glass-card p-6">
+                    <h3 class="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-foreground">Destinos Populares</h3>
+                    <p class="chart-description">Muestra los destinos más consultados por los clientes, ayudando a identificar preferencias y oportunidades de marketing.</p>
+                    <div class="chart-container">
+                        <canvas id="chartDestinos"></canvas>
+                    </div>
+                </div>
+                
+                <div class="glass-card p-6">
+                    <h3 class="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-foreground">Tipo de Paquete</h3>
+                    <p class="chart-description">Distribución de los diferentes tipos de paquetes solicitados (Vuelo + Hotel, Solo Vuelo, All Inclusive, Tour), mostrando las preferencias de los clientes.</p>
+                    <div class="chart-container">
+                        <canvas id="chartTipoPaquete"></canvas>
+                    </div>
+                </div>
+                
+                <div class="glass-card p-6">
+                    <h3 class="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-foreground">Prioridad vs Cierre</h3>
+                    <p class="chart-description">Analiza la relación entre el nivel de prioridad asignado (Alta, Media, Baja) y el resultado final de la conversación, permitiendo evaluar la efectividad del seguimiento.</p>
+                    <div class="chart-container">
+                        <canvas id="chartPrioridad"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Additional Chart - Composición Familiar -->
+        <section class="mb-12">
+            <h2 class="section-title">📊 Análisis Familiar</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="glass-card p-6">
+                    <h3 class="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-foreground">Composición Familiar</h3>
+                    <p class="chart-description">Muestra la proporción entre adultos y niños en las reservas, útil para entender el perfil de los grupos familiares que viajan.</p>
+                    <div class="chart-container-large">
+                        <canvas id="chartFamiliar"></canvas>
+                    </div>
+                </div>
+                
+                <div class="glass-card p-6">
+                    <h3 class="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-foreground">Distribución de Prioridades</h3>
+                    <p class="chart-description">Visualiza cómo se distribuyen las consultas según su nivel de prioridad, ayudando a identificar el volumen de casos de alta, media y baja prioridad.</p>
+                    <div class="chart-container-large">
+                        <canvas id="chartPrioridadDistribucion"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Calendar Heatmap -->
+        <section class="mb-12">
+            <h2 class="section-title">📆 Actividad del Mes</h2>
+            <div class="glass-card p-6">
+                <h3 class="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-foreground" id="calendarTitle">Calendario de Enero 2026</h3>
+                <p class="chart-description">Heatmap mensual que muestra la actividad diaria durante el mes, donde la intensidad del color indica la cantidad de sesiones registradas cada día.</p>
+                <div id="calendarHeatmap" class="overflow-x-auto">
+                    <!-- Calendar will be generated here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Table Section -->
+        <section class="mb-12">
+            <h2 class="section-title">📋 Datos Detallados</h2>
+            <div class="glass-card p-6">
+                <!-- Filters -->
+                <div class="mb-6 flex flex-col md:flex-row gap-4">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        class="search-input" 
+                        placeholder="🔍 Buscar por nombre, destino, teléfono..."
+                        onkeyup="filterTable()"
+                    >
+                    
+                    <select id="filterCierre" class="filter-select" onchange="filterTable()">
+                        <option value="">Todos los estados</option>
+                        <option value="Vendido">Vendido</option>
+                        <option value="Potable">Potable</option>
+                        <option value="No Vendido">No Vendido</option>
+                        <option value="No Potable">No Potable</option>
+                    </select>
+                    
+                    <select id="filterPrioridad" class="filter-select" onchange="filterTable()">
+                        <option value="">Todas las prioridades</option>
+                        <option value="Alta">Alta</option>
+                        <option value="Media">Media</option>
+                        <option value="Baja">Baja</option>
+                    </select>
+                </div>
+
+                <!-- Table -->
+                <div class="overflow-x-auto">
+                    <table id="dataTable">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Destino</th>
+                                <th>Tipo Paquete</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Pasajeros</th>
+                                <th>Prioridad</th>
+                                <th>Mensajes</th>
+                                <th>Cierre</th>
+                                <th>Agente</th>
+                                <th>Chat</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination" id="paginationControls">
+                    <!-- Pagination will be generated here -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // CSV Data (embedded)
+        const csvData = `Nombre,Destino,Tipo_paquete,Fecha_contacto,Hora_contacto,Cantidad_pasajeros,Cantidad_adultos,Cantidad_niños,Prioridad,Cantidad_mensajes,Numero_telefono,Cierre_conversacion,Link_chat,Agente
+Christian Chaparro,Cancún,Vuelo + Hotel,13/01/2026,18,3,1,2,Alta,26,+595988220482,Potable,https://go.botmaker.com/#/chats/6HDPITCU8WUCVBHUEPTU,Carlos Vera
+Ana Martínez,Buenos Aires,Vuelo + Hotel,19/01/2026,17,2,1,1,Media,7,+595985748230,Potable,https://go.botmaker.com/#/chats/WRT1Q7NIG2CKRMQVCSFM,Lucía Gómez
+María González,Punta Cana,Solo Vuelo,31/01/2026,18,4,1,3,Alta,24,+595957000147,No Vendido,https://go.botmaker.com/#/chats/UQ48RXCZX93KNYAQGEC1,Gonzalo Quiñonez
+Laura Benítez,Cancún,All Inclusive,13/01/2026,22,2,2,0,Media,31,+595963907779,Vendido,https://go.botmaker.com/#/chats/535KOM58FGIIRVJAPNU8,Carlos Vera
+Christian Chaparro,Miami,Tour,21/01/2026,18,5,5,0,Alta,28,+595963550032,No Vendido,https://go.botmaker.com/#/chats/DWCCHFMBAFDNA5WFJMNE,Lucía Gómez
+María González,Río de Janeiro,Vuelo + Hotel,16/01/2026,12,4,4,0,Alta,24,+595945535068,No Vendido,https://go.botmaker.com/#/chats/3FA8TFTAT95ZJNG1T2LI,Gonzalo Quiñonez
+Ana Martínez,Río de Janeiro,Tour,24/01/2026,20,2,2,0,Media,25,+595913889649,Potable,https://go.botmaker.com/#/chats/2RGVM30M9CDQMR9VA6MX,Carlos Vera
+Ana Martínez,Miami,All Inclusive,26/01/2026,19,1,1,0,Baja,30,+595995341298,Vendido,https://go.botmaker.com/#/chats/D8ZQ0DF9AVQXWVR7FTA2,Carlos Vera
+Ana Martínez,Río de Janeiro,Vuelo + Hotel,14/01/2026,21,1,1,0,Baja,19,+595938558820,Vendido,https://go.botmaker.com/#/chats/S1LT4C06X3S35EFS51V1,Gonzalo Quiñonez
+María González,Punta Cana,Vuelo + Hotel,16/01/2026,17,2,1,1,Media,23,+595979571586,No Vendido,https://go.botmaker.com/#/chats/2DUIJ1SU16PWSSYQTR7Z,Lucía Gómez
+Juan Pérez,Miami,Vuelo + Hotel,27/01/2026,15,5,2,3,Alta,28,+595969340085,Vendido,https://go.botmaker.com/#/chats/CICY26FZXF58H8OR93FP,Carlos Vera
+Sofía Romero,Buenos Aires,Vuelo + Hotel,14/01/2026,11,4,3,1,Alta,26,+595912614954,Vendido,https://go.botmaker.com/#/chats/TPALWSC928DJB2JEP63J,Gonzalo Quiñonez
+Sofía Romero,Cancún,Solo Vuelo,19/01/2026,15,5,5,0,Alta,6,+595934608019,No Vendido,https://go.botmaker.com/#/chats/6JADJVIJEA9P6WBZ78JG,Lucía Gómez
+Luis Fernández,Miami,All Inclusive,25/01/2026,11,3,3,0,Alta,20,+595956573688,Potable,https://go.botmaker.com/#/chats/9BAS9SIQXXXT58LHIH50,Gonzalo Quiñonez
+Juan Pérez,Cancún,Vuelo + Hotel,02/01/2026,21,4,3,1,Alta,19,+595967813039,No Potable,https://go.botmaker.com/#/chats/BXNS8VYBGJANL9LB5HGM,Gonzalo Quiñonez
+Ana Martínez,Río de Janeiro,Vuelo + Hotel,17/01/2026,18,4,3,1,Alta,8,+595945456120,Potable,https://go.botmaker.com/#/chats/FVOKWD84F62V1ZRKWF3Z,Carlos Vera
+Diego Rojas,Punta Cana,Vuelo + Hotel,30/01/2026,16,4,2,2,Alta,17,+595921420815,Potable,https://go.botmaker.com/#/chats/BW8NQBATIJQC76DS0R34,Gonzalo Quiñonez
+Laura Benítez,Miami,Tour,24/01/2026,18,2,1,1,Media,7,+595974291655,Vendido,https://go.botmaker.com/#/chats/1WXCFJ0KUACJYYYKSQQE,Carlos Vera
+Laura Benítez,Cancún,Solo Vuelo,03/01/2026,22,2,2,0,Media,32,+595920262856,No Vendido,https://go.botmaker.com/#/chats/9N67CD0JMVWKENR5OF8Y,Lucía Gómez
+Sofía Romero,Miami,Solo Vuelo,05/01/2026,14,3,3,0,Alta,10,+595954469603,Potable,https://go.botmaker.com/#/chats/LMO7HA0JCO5C714KBXWF,Lucía Gómez
+Sofía Romero,Miami,Vuelo + Hotel,07/01/2026,20,4,3,1,Alta,28,+595984377153,No Potable,https://go.botmaker.com/#/chats/ZB0Q1XKB7EQMK09JXKUO,Gonzalo Quiñonez
+Laura Benítez,Punta Cana,All Inclusive,07/01/2026,16,2,1,1,Media,31,+595954672257,No Vendido,https://go.botmaker.com/#/chats/PTIGULN3HA5N0HJ1RUMY,Carlos Vera
+Ana Martínez,Miami,Tour,09/01/2026,22,2,1,1,Media,31,+595967960138,Vendido,https://go.botmaker.com/#/chats/45ABZ6RVAO7349IDFSY7,Carlos Vera
+Christian Chaparro,Cancún,All Inclusive,18/01/2026,20,4,1,3,Alta,17,+595986421196,Potable,https://go.botmaker.com/#/chats/XKEJWZECSUNIVAKQ8X5R,Gonzalo Quiñonez
+Luis Fernández,Cancún,Vuelo + Hotel,01/01/2026,14,5,2,3,Alta,15,+595976882068,No Vendido,https://go.botmaker.com/#/chats/CIPNRZZNOAK4CRH1GQJ6,Gonzalo Quiñonez
+Ana Martínez,Miami,Tour,20/01/2026,10,5,4,1,Alta,6,+595989832995,No Potable,https://go.botmaker.com/#/chats/7BAVOZGQZLECFGXSQL04,Lucía Gómez
+María González,Buenos Aires,Vuelo + Hotel,04/01/2026,8,4,2,2,Alta,25,+595966396028,Potable,https://go.botmaker.com/#/chats/U1N1L2DZHTQL0RWIWONQ,Gonzalo Quiñonez
+Paula Acosta,Buenos Aires,Solo Vuelo,24/01/2026,9,3,1,2,Alta,20,+595954959034,Potable,https://go.botmaker.com/#/chats/JZLJA16W7AIR88NJPR7G,Carlos Vera
+Paula Acosta,Río de Janeiro,Solo Vuelo,25/01/2026,10,3,3,0,Alta,23,+595971845005,Vendido,https://go.botmaker.com/#/chats/2VSOFOXRTFPDCWHP98GE,Lucía Gómez
+María González,Buenos Aires,Solo Vuelo,24/01/2026,16,5,2,3,Alta,20,+595986085910,Vendido,https://go.botmaker.com/#/chats/N0HIIF5ULO9SI3X9DR34,Lucía Gómez
+Christian Chaparro,Río de Janeiro,All Inclusive,08/01/2026,9,1,1,0,Baja,7,+595959960799,No Potable,https://go.botmaker.com/#/chats/QJ18DVWHNFHJVXHALYGL,Gonzalo Quiñonez
+María González,Miami,Vuelo + Hotel,18/01/2026,15,1,1,0,Baja,28,+595999124119,No Potable,https://go.botmaker.com/#/chats/XDFZOKL8LUMO59NH0HA6,Lucía Gómez
+Sofía Romero,Miami,All Inclusive,13/01/2026,17,1,1,0,Baja,11,+595911991036,Potable,https://go.botmaker.com/#/chats/TX6DWNSFKS7DR28HE79R,Gonzalo Quiñonez
+Paula Acosta,Madrid,All Inclusive,03/01/2026,22,5,4,1,Alta,17,+595993356334,No Vendido,https://go.botmaker.com/#/chats/WHRUB7FMF83G54YYLOQ4,Lucía Gómez
+Miguel Duarte,Miami,Solo Vuelo,19/01/2026,11,4,3,1,Alta,31,+595977589148,No Vendido,https://go.botmaker.com/#/chats/GA9QQW343OCMN2SXBE7L,Carlos Vera
+Diego Rojas,Miami,All Inclusive,02/01/2026,20,5,1,4,Alta,4,+595918909462,Potable,https://go.botmaker.com/#/chats/G9R86F27CM1F6J3FS7HJ,Carlos Vera
+Ana Martínez,Río de Janeiro,Tour,12/01/2026,8,2,2,0,Media,13,+595995439217,Vendido,https://go.botmaker.com/#/chats/Y6G2ETWM5TU5D9WO2J9U,Lucía Gómez
+Juan Pérez,Punta Cana,Vuelo + Hotel,15/01/2026,11,3,1,2,Alta,21,+595979270678,Vendido,https://go.botmaker.com/#/chats/L857600HKWPNBRWBBUKS,Carlos Vera
+Paula Acosta,Río de Janeiro,All Inclusive,19/01/2026,12,2,2,0,Media,26,+595993742407,No Vendido,https://go.botmaker.com/#/chats/FA2ZQCFXJ38C36VUVSRF,Gonzalo Quiñonez
+Miguel Duarte,Río de Janeiro,All Inclusive,18/01/2026,8,1,1,0,Baja,13,+595917835520,Potable,https://go.botmaker.com/#/chats/AT7FHVSX3GLKB62ZA40Q,Carlos Vera
+Luis Fernández,Río de Janeiro,Vuelo + Hotel,08/01/2026,9,4,2,2,Alta,10,+595955032202,Vendido,https://go.botmaker.com/#/chats/ZJTP2SJX8H5AJI080L5L,Gonzalo Quiñonez
+Diego Rojas,Madrid,Vuelo + Hotel,16/01/2026,21,4,4,0,Alta,4,+595968681870,No Potable,https://go.botmaker.com/#/chats/ULHWC6FAD7MFBBYWZ0CV,Lucía Gómez
+Miguel Duarte,Cancún,All Inclusive,29/01/2026,21,2,1,1,Media,16,+595937267733,Potable,https://go.botmaker.com/#/chats/B861D1WRE2XKMJM7B161,Carlos Vera
+Paula Acosta,Madrid,Vuelo + Hotel,28/01/2026,12,5,4,1,Alta,29,+595914194076,No Vendido,https://go.botmaker.com/#/chats/SDQBUZ3UKPSK1BMDZ38V,Carlos Vera
+Luis Fernández,Río de Janeiro,All Inclusive,31/01/2026,10,3,3,0,Alta,34,+595932252095,Potable,https://go.botmaker.com/#/chats/71R9UDLD760PXNKPTG9W,Lucía Gómez
+Sofía Romero,Punta Cana,All Inclusive,12/01/2026,17,2,1,1,Media,31,+595998865581,Vendido,https://go.botmaker.com/#/chats/GP1UEQ5IGKZ4FFILSFLG,Carlos Vera
+María González,Río de Janeiro,Tour,31/01/2026,18,1,1,0,Baja,12,+595929907059,Vendido,https://go.botmaker.com/#/chats/0PHWDHNBO2YSWQFVO06P,Carlos Vera
+Paula Acosta,Río de Janeiro,All Inclusive,28/01/2026,11,5,4,1,Alta,10,+595970921788,No Vendido,https://go.botmaker.com/#/chats/LWDP2ZWJPQWOY7GX2NR9,Gonzalo Quiñonez
+Ana Martínez,Punta Cana,Solo Vuelo,07/01/2026,10,3,3,0,Alta,9,+595987116204,No Vendido,https://go.botmaker.com/#/chats/TZSX3SO8HYO1E9MCJOAP,Lucía Gómez
+Ana Martínez,Buenos Aires,Tour,09/01/2026,9,3,3,0,Alta,17,+595962608350,No Vendido,https://go.botmaker.com/#/chats/HE13WQUI8MW33QKTE4M4,Lucía Gómez
+Juan Pérez,Miami,Vuelo + Hotel,14/01/2026,18,4,3,1,Alta,20,+595958046916,No Potable,https://go.botmaker.com/#/chats/XLRWD6FKNDUL7TMUXHCK,Carlos Vera
+Juan Pérez,Miami,Solo Vuelo,28/01/2026,11,1,1,0,Baja,12,+595937989887,No Vendido,https://go.botmaker.com/#/chats/2G6V2Y624HYT0P5TJIFR,Gonzalo Quiñonez
+Laura Benítez,Río de Janeiro,Tour,29/01/2026,10,4,4,0,Alta,13,+595982416196,Potable,https://go.botmaker.com/#/chats/FLZRKQP9YGMXAB093DR1,Gonzalo Quiñonez
+Juan Pérez,Buenos Aires,Vuelo + Hotel,23/01/2026,14,1,1,0,Baja,26,+595955810041,No Vendido,https://go.botmaker.com/#/chats/2T6KMJBKMRM95MHREGZE,Carlos Vera
+Diego Rojas,Miami,Vuelo + Hotel,13/01/2026,19,1,1,0,Baja,28,+595950319864,Potable,https://go.botmaker.com/#/chats/AG7VX26WWWZVYHYQ1DGB,Gonzalo Quiñonez
+Juan Pérez,Buenos Aires,Solo Vuelo,28/01/2026,21,1,1,0,Baja,22,+595934800258,No Vendido,https://go.botmaker.com/#/chats/BAUU6RS31PZOCYV9XF1T,Gonzalo Quiñonez
+Christian Chaparro,Miami,Vuelo + Hotel,29/01/2026,10,4,2,2,Alta,3,+595999840815,Potable,https://go.botmaker.com/#/chats/94HERJUQ07N0ZF1KURY6,Gonzalo Quiñonez
+Paula Acosta,Cancún,Tour,02/01/2026,8,1,1,0,Baja,22,+595951942343,No Potable,https://go.botmaker.com/#/chats/84VL80QF8E8F2R2QJ1MK,Carlos Vera
+Christian Chaparro,Río de Janeiro,Solo Vuelo,28/01/2026,17,5,3,2,Alta,30,+595943032463,No Vendido,https://go.botmaker.com/#/chats/NN1IQYLJF712KF69F92T,Lucía Gómez
+Diego Rojas,Miami,Tour,03/01/2026,16,3,3,0,Alta,15,+595941411273,Vendido,https://go.botmaker.com/#/chats/VYQHJ12QD31IU65SRVGG,Gonzalo Quiñonez
+María González,Cancún,Vuelo + Hotel,02/02/2026,9,3,2,1,Alta,22,+595912345678,Vendido,https://go.botmaker.com/#/chats/FEB001,Carlos Vera
+Juan Pérez,Buenos Aires,Solo Vuelo,05/02/2026,14,2,2,0,Media,18,+595923456789,Potable,https://go.botmaker.com/#/chats/FEB002,Lucía Gómez
+Ana Martínez,Miami,Vuelo + Hotel,08/02/2026,16,4,3,1,Alta,25,+595934567890,No Vendido,https://go.botmaker.com/#/chats/FEB003,Gonzalo Quiñonez
+Sofía Romero,Punta Cana,Solo Vuelo,10/02/2026,11,3,2,1,Baja,12,+595945678901,Potable,https://go.botmaker.com/#/chats/FEB004,Carlos Vera
+Luis Fernández,Río de Janeiro,Vuelo + Hotel,12/02/2026,20,5,4,1,Alta,28,+595956789012,Vendido,https://go.botmaker.com/#/chats/FEB005,Lucía Gómez
+Laura Benítez,Madrid,Vuelo + Hotel,14/02/2026,8,2,1,1,Media,15,+595967890123,No Potable,https://go.botmaker.com/#/chats/FEB006,Gonzalo Quiñonez
+Christian Chaparro,Cancún,Solo Vuelo,15/02/2026,13,4,3,1,Alta,21,+595978901234,Potable,https://go.botmaker.com/#/chats/FEB007,Carlos Vera
+Diego Rojas,Buenos Aires,Vuelo + Hotel,17/02/2026,19,3,2,1,Media,24,+595989012345,Vendido,https://go.botmaker.com/#/chats/FEB008,Lucía Gómez
+Paula Acosta,Miami,Solo Vuelo,18/02/2026,7,2,2,0,Baja,9,+595990123456,No Vendido,https://go.botmaker.com/#/chats/FEB009,Gonzalo Quiñonez
+Miguel Duarte,Punta Cana,Vuelo + Hotel,20/02/2026,15,4,3,1,Alta,27,+595901234567,Potable,https://go.botmaker.com/#/chats/FEB010,Carlos Vera
+María González,Río de Janeiro,Solo Vuelo,22/02/2026,10,3,2,1,Media,16,+595912345670,Vendido,https://go.botmaker.com/#/chats/FEB011,Lucía Gómez
+Ana Martínez,Cancún,Vuelo + Hotel,23/02/2026,18,5,4,1,Alta,29,+595923456781,No Potable,https://go.botmaker.com/#/chats/FEB012,Gonzalo Quiñonez
+Juan Pérez,Madrid,Solo Vuelo,25/02/2026,12,2,1,1,Baja,11,+595934567892,Potable,https://go.botmaker.com/#/chats/FEB013,Carlos Vera
+Sofía Romero,Buenos Aires,Vuelo + Hotel,26/02/2026,21,4,3,1,Alta,26,+595945678903,Vendido,https://go.botmaker.com/#/chats/FEB014,Lucía Gómez
+Luis Fernández,Miami,Solo Vuelo,28/02/2026,6,3,2,1,Media,14,+595956789014,No Vendido,https://go.botmaker.com/#/chats/FEB015,Gonzalo Quiñonez
+Laura Benítez,Punta Cana,Vuelo + Hotel,01/02/2026,17,2,1,1,Alta,23,+595967890125,Potable,https://go.botmaker.com/#/chats/FEB016,Carlos Vera
+Christian Chaparro,Buenos Aires,Solo Vuelo,03/02/2026,22,4,3,1,Media,20,+595978901236,Vendido,https://go.botmaker.com/#/chats/FEB017,Lucía Gómez
+Diego Rojas,Cancún,Vuelo + Hotel,06/02/2026,5,3,2,1,Baja,13,+595989012347,No Potable,https://go.botmaker.com/#/chats/FEB018,Gonzalo Quiñonez
+Paula Acosta,Río de Janeiro,Solo Vuelo,09/02/2026,19,5,4,1,Alta,31,+595990123458,Potable,https://go.botmaker.com/#/chats/FEB019,Carlos Vera
+Miguel Duarte,Madrid,Vuelo + Hotel,11/02/2026,4,2,1,1,Media,10,+595901234569,No Vendido,https://go.botmaker.com/#/chats/FEB020,Lucía Gómez
+María González,Miami,Solo Vuelo,13/02/2026,16,3,2,1,Alta,22,+595912345680,Vendido,https://go.botmaker.com/#/chats/FEB021,Gonzalo Quiñonez
+Ana Martínez,Punta Cana,Vuelo + Hotel,16/02/2026,8,4,3,1,Media,19,+595923456791,Potable,https://go.botmaker.com/#/chats/FEB022,Carlos Vera
+Juan Pérez,Cancún,Solo Vuelo,19/02/2026,14,2,2,0,Baja,8,+595934567802,No Potable,https://go.botmaker.com/#/chats/FEB023,Lucía Gómez
+Sofía Romero,Buenos Aires,Vuelo + Hotel,21/02/2026,23,5,4,1,Alta,32,+595945678913,Vendido,https://go.botmaker.com/#/chats/FEB024,Gonzalo Quiñonez
+Luis Fernández,Río de Janeiro,Solo Vuelo,24/02/2026,3,3,2,1,Media,17,+595956789024,Potable,https://go.botmaker.com/#/chats/FEB025,Carlos Vera
+Laura Benítez,Madrid,Vuelo + Hotel,27/02/2026,11,4,3,1,Alta,25,+595967890135,No Vendido,https://go.botmaker.com/#/chats/FEB026,Lucía Gómez
+Christian Chaparro,Miami,Solo Vuelo,04/02/2026,20,2,1,1,Baja,7,+595978901246,Vendido,https://go.botmaker.com/#/chats/FEB027,Gonzalo Quiñonez
+Diego Rojas,Punta Cana,Vuelo + Hotel,07/02/2026,2,5,4,1,Alta,30,+595989012357,Potable,https://go.botmaker.com/#/chats/FEB028,Carlos Vera
+Paula Acosta,Cancún,Solo Vuelo,09/02/2026,15,3,2,1,Media,18,+595990123468,No Potable,https://go.botmaker.com/#/chats/FEB029,Lucía Gómez
+Miguel Duarte,Buenos Aires,Vuelo + Hotel,11/02/2026,1,4,3,1,Alta,24,+595901234579,Vendido,https://go.botmaker.com/#/chats/FEB030,Gonzalo Quiñonez
+María González,Río de Janeiro,Solo Vuelo,13/02/2026,17,2,2,0,Baja,9,+595912345690,Potable,https://go.botmaker.com/#/chats/FEB031,Carlos Vera
+Ana Martínez,Madrid,Vuelo + Hotel,15/02/2026,6,5,4,1,Alta,28,+595923456701,No Vendido,https://go.botmaker.com/#/chats/FEB032,Lucía Gómez
+Juan Pérez,Miami,Solo Vuelo,16/02/2026,12,3,2,1,Media,16,+595934567812,Vendido,https://go.botmaker.com/#/chats/FEB033,Gonzalo Quiñonez
+Sofía Romero,Punta Cana,Vuelo + Hotel,19/02/2026,21,4,3,1,Alta,26,+595945678923,Potable,https://go.botmaker.com/#/chats/FEB034,Carlos Vera
+Luis Fernández,Cancún,Solo Vuelo,24/02/2026,9,2,1,1,Baja,11,+595956789034,No Potable,https://go.botmaker.com/#/chats/FEB035,Lucía Gómez
+María González,Buenos Aires,Vuelo + Hotel,01/03/2026,13,3,2,1,Alta,21,+595912345701,Vendido,https://go.botmaker.com/#/chats/MAR001,Carlos Vera
+Juan Pérez,Miami,Solo Vuelo,03/03/2026,18,4,3,1,Media,24,+595923456812,Potable,https://go.botmaker.com/#/chats/MAR002,Lucía Gómez
+Ana Martínez,Punta Cana,Vuelo + Hotel,05/03/2026,7,2,1,1,Baja,10,+595934567923,No Vendido,https://go.botmaker.com/#/chats/MAR003,Gonzalo Quiñonez
+Sofía Romero,Cancún,Solo Vuelo,07/03/2026,15,5,4,1,Alta,29,+595945678034,Potable,https://go.botmaker.com/#/chats/MAR004,Carlos Vera
+Luis Fernández,Río de Janeiro,Vuelo + Hotel,09/03/2026,22,3,2,1,Media,20,+595956789145,Vendido,https://go.botmaker.com/#/chats/MAR005,Lucía Gómez
+Laura Benítez,Madrid,Solo Vuelo,11/03/2026,4,2,2,0,Baja,8,+595967890256,No Potable,https://go.botmaker.com/#/chats/MAR006,Gonzalo Quiñonez
+Christian Chaparro,Buenos Aires,Vuelo + Hotel,13/03/2026,19,4,3,1,Alta,27,+595978901367,Potable,https://go.botmaker.com/#/chats/MAR007,Carlos Vera
+Diego Rojas,Miami,Solo Vuelo,15/03/2026,11,3,2,1,Media,17,+595989012478,Vendido,https://go.botmaker.com/#/chats/MAR008,Lucía Gómez
+Paula Acosta,Punta Cana,Vuelo + Hotel,17/03/2026,23,5,4,1,Alta,31,+595990123589,No Vendido,https://go.botmaker.com/#/chats/MAR009,Gonzalo Quiñonez
+Miguel Duarte,Cancún,Solo Vuelo,19/03/2026,6,2,1,1,Baja,12,+595901234690,Potable,https://go.botmaker.com/#/chats/MAR010,Carlos Vera
+María González,Río de Janeiro,Vuelo + Hotel,21/03/2026,14,4,3,1,Alta,25,+595912345801,Vendido,https://go.botmaker.com/#/chats/MAR011,Lucía Gómez
+Ana Martínez,Madrid,Solo Vuelo,23/03/2026,20,3,2,1,Media,22,+595923456912,No Potable,https://go.botmaker.com/#/chats/MAR012,Gonzalo Quiñonez
+Juan Pérez,Buenos Aires,Vuelo + Hotel,25/03/2026,8,5,4,1,Alta,30,+595934567023,Potable,https://go.botmaker.com/#/chats/MAR013,Carlos Vera
+Sofía Romero,Miami,Solo Vuelo,27/03/2026,16,2,1,1,Baja,9,+595945678134,Vendido,https://go.botmaker.com/#/chats/MAR014,Lucía Gómez
+Luis Fernández,Punta Cana,Vuelo + Hotel,29/03/2026,2,4,3,1,Alta,26,+595956789245,No Vendido,https://go.botmaker.com/#/chats/MAR015,Gonzalo Quiñonez
+Laura Benítez,Cancún,Solo Vuelo,31/03/2026,12,3,2,1,Media,19,+595967890356,Potable,https://go.botmaker.com/#/chats/MAR016,Carlos Vera
+Christian Chaparro,Río de Janeiro,Vuelo + Hotel,02/03/2026,17,5,4,1,Alta,28,+595978901467,Vendido,https://go.botmaker.com/#/chats/MAR017,Lucía Gómez
+Diego Rojas,Madrid,Solo Vuelo,04/03/2026,5,2,2,0,Baja,7,+595989012578,No Potable,https://go.botmaker.com/#/chats/MAR018,Gonzalo Quiñonez
+Paula Acosta,Buenos Aires,Vuelo + Hotel,06/03/2026,21,4,3,1,Alta,24,+595990123689,Potable,https://go.botmaker.com/#/chats/MAR019,Carlos Vera
+Miguel Duarte,Miami,Solo Vuelo,08/03/2026,10,3,2,1,Media,15,+595901234790,Vendido,https://go.botmaker.com/#/chats/MAR020,Lucía Gómez
+María González,Punta Cana,Vuelo + Hotel,10/03/2026,18,5,4,1,Alta,29,+595912345801,No Vendido,https://go.botmaker.com/#/chats/MAR021,Gonzalo Quiñonez
+Ana Martínez,Cancún,Solo Vuelo,12/03/2026,3,2,1,1,Baja,11,+595923456912,Potable,https://go.botmaker.com/#/chats/MAR022,Carlos Vera
+Juan Pérez,Río de Janeiro,Vuelo + Hotel,14/03/2026,19,4,3,1,Alta,27,+595934567023,Vendido,https://go.botmaker.com/#/chats/MAR023,Lucía Gómez
+Sofía Romero,Madrid,Solo Vuelo,16/03/2026,7,3,2,1,Media,16,+595945678134,No Potable,https://go.botmaker.com/#/chats/MAR024,Gonzalo Quiñonez
+Luis Fernández,Buenos Aires,Vuelo + Hotel,18/03/2026,22,5,4,1,Alta,32,+595956789245,Potable,https://go.botmaker.com/#/chats/MAR025,Carlos Vera
+Laura Benítez,Miami,Solo Vuelo,20/03/2026,1,2,2,0,Baja,8,+595967890356,Vendido,https://go.botmaker.com/#/chats/MAR026,Lucía Gómez
+Christian Chaparro,Punta Cana,Vuelo + Hotel,22/03/2026,13,4,3,1,Alta,23,+595978901467,No Vendido,https://go.botmaker.com/#/chats/MAR027,Gonzalo Quiñonez
+Diego Rojas,Cancún,Solo Vuelo,24/03/2026,20,3,2,1,Media,21,+595989012578,Potable,https://go.botmaker.com/#/chats/MAR028,Carlos Vera
+Paula Acosta,Río de Janeiro,Vuelo + Hotel,26/03/2026,9,5,4,1,Alta,30,+595990123689,Vendido,https://go.botmaker.com/#/chats/MAR029,Lucía Gómez
+Miguel Duarte,Madrid,Solo Vuelo,28/03/2026,15,2,1,1,Baja,10,+595901234790,No Potable,https://go.botmaker.com/#/chats/MAR030,Gonzalo Quiñonez
+María González,Buenos Aires,Vuelo + Hotel,30/03/2026,11,4,3,1,Alta,26,+595912345801,Potable,https://go.botmaker.com/#/chats/MAR031,Carlos Vera
+Ana Martínez,Miami,Solo Vuelo,01/03/2026,17,3,2,1,Media,18,+595923456912,Vendido,https://go.botmaker.com/#/chats/MAR032,Lucía Gómez
+Juan Pérez,Punta Cana,Vuelo + Hotel,02/03/2026,4,5,4,1,Alta,31,+595934567023,No Vendido,https://go.botmaker.com/#/chats/MAR033,Gonzalo Quiñonez
+Sofía Romero,Cancún,Solo Vuelo,03/03/2026,14,2,1,1,Baja,9,+595945678134,Potable,https://go.botmaker.com/#/chats/MAR034,Carlos Vera
+Luis Fernández,Río de Janeiro,Vuelo + Hotel,04/03/2026,21,4,3,1,Alta,28,+595956789245,Vendido,https://go.botmaker.com/#/chats/MAR035,Lucía Gómez`;
+
+        // Parse CSV
+        function parseCSV(csv) {
+            const lines = csv.trim().split('\n');
+            const headers = lines[0].split(',');
+            const data = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',');
+                const obj = {};
+                headers.forEach((header, index) => {
+                    obj[header] = values[index];
+                });
+                data.push(obj);
+            }
+            
+            return data;
+        }
+
+        let allData = parseCSV(csvData);
+        let filteredData = [...allData];
+        let filteredChartData = [...allData];
+        let currentPage = 1;
+        const rowsPerPage = 10;
+        
+        // Chart instances storage for cleanup
+        const chartInstances = {};
+
+        // Apply Chart Filters
+        function applyChartFilters() {
+            const filterMonth = document.getElementById('filterMonth')?.value || '';
+            const filterAgent = document.getElementById('filterAgent')?.value || '';
+            const filterDestination = document.getElementById('filterDestination')?.value || '';
+            const filterClosure = document.getElementById('filterClosure')?.value || '';
+            const filterPriority = document.getElementById('filterPriority')?.value || '';
+            const filterPackageType = document.getElementById('filterPackageType')?.value || '';
+            
+            filteredChartData = allData.filter(row => {
+                // Filter by month
+                if (filterMonth) {
+                    const [day, month] = row.Fecha_contacto.split('/');
+                    if (month !== filterMonth) return false;
+                }
+                
+                // Filter by agent
+                if (filterAgent && row.Agente !== filterAgent) return false;
+                
+                // Filter by destination
+                if (filterDestination && row.Destino !== filterDestination) return false;
+                
+                // Filter by closure status
+                if (filterClosure && row.Cierre_conversacion !== filterClosure) return false;
+                
+                // Filter by priority
+                if (filterPriority && row.Prioridad !== filterPriority) return false;
+                
+                // Filter by package type
+                if (filterPackageType && row.Tipo_paquete !== filterPackageType) return false;
+                
+                return true;
+            });
+            
+            refreshAllCharts();
+        }
+
+        // Refresh All Charts
+        function refreshAllCharts() {
+            // Destroy existing chart instances
+            Object.values(chartInstances).forEach(chart => {
+                if (chart && typeof chart.destroy === 'function') {
+                    chart.destroy();
+                }
+            });
+            Object.keys(chartInstances).forEach(key => delete chartInstances[key]);
+            
+            // Recalculate KPIs
+            calculateKPIs();
+            
+            // Regenerate all charts
+            createSesionesFechaChart();
+            createHeatmap();
+            createCierreChart();
+            createAgentesChart();
+            createDestinosChart();
+            createTipoPaqueteChart();
+            createPrioridadChart();
+            createFamiliarChart();
+            createPrioridadDistribucionChart();
+            createCalendarHeatmap();
+        }
+
+        // Clear All Filters
+        function clearChartFilters() {
+            document.getElementById('filterMonth').value = '';
+            document.getElementById('filterAgent').value = '';
+            document.getElementById('filterDestination').value = '';
+            document.getElementById('filterClosure').value = '';
+            document.getElementById('filterPriority').value = '';
+            document.getElementById('filterPackageType').value = '';
+            applyChartFilters();
+        }
+
+        // Populate Dynamic Filter Options
+        function populateFilterOptions() {
+            // Get unique agents
+            const agents = [...new Set(allData.map(d => d.Agente))].sort();
+            const agentSelect = document.getElementById('filterAgent');
+            agents.forEach(agent => {
+                const option = document.createElement('option');
+                option.value = agent;
+                option.textContent = agent;
+                agentSelect.appendChild(option);
+            });
+            
+            // Get unique destinations
+            const destinations = [...new Set(allData.map(d => d.Destino))].sort();
+            const destSelect = document.getElementById('filterDestination');
+            destinations.forEach(dest => {
+                const option = document.createElement('option');
+                option.value = dest;
+                option.textContent = dest;
+                destSelect.appendChild(option);
+            });
+        }
+
+        // Calculate KPIs
+        function calculateKPIs() {
+            const totalSesiones = filteredChartData.length;
+            const vendidos = filteredChartData.filter(d => d.Cierre_conversacion === 'Vendido').length;
+            const tasaConversion = totalSesiones > 0 ? ((vendidos / totalSesiones) * 100).toFixed(1) : '0.0';
+            const totalMensajes = filteredChartData.reduce((sum, d) => sum + parseInt(d.Cantidad_mensajes), 0);
+            const promedioMensajes = totalSesiones > 0 ? (totalMensajes / totalSesiones).toFixed(1) : '0.0';
+            const totalPasajeros = filteredChartData.reduce((sum, d) => sum + parseInt(d.Cantidad_pasajeros), 0);
+            const promedioPasajeros = totalSesiones > 0 ? (totalPasajeros / totalSesiones).toFixed(1) : '0.0';
+            
+            // Agente top (ventas)
+            const agenteVentas = {};
+            filteredChartData.forEach(d => {
+                if (d.Cierre_conversacion === 'Vendido') {
+                    agenteVentas[d.Agente] = (agenteVentas[d.Agente] || 0) + 1;
+                }
+            });
+            const agenteTop = Object.keys(agenteVentas).reduce((a, b) => 
+                agenteVentas[a] > agenteVentas[b] ? a : b, Object.keys(agenteVentas)[0] || ''
+            );
+            
+            const totalSesionesEl = document.getElementById('totalSesiones');
+            const tasaConversionEl = document.getElementById('tasaConversion');
+            const totalMensajesEl = document.getElementById('totalMensajes');
+            const promedioMensajesEl = document.getElementById('promedioMensajes');
+            const promedioPasajerosEl = document.getElementById('promedioPasajeros');
+            const ventasCerradasEl = document.getElementById('ventasCerradas');
+            const porcentajeVentasEl = document.getElementById('porcentajeVentas');
+            const agenteTopEl = document.getElementById('agenteTop');
+            const ventasAgenteTopEl = document.getElementById('ventasAgenteTop');
+            
+            if (totalSesionesEl) totalSesionesEl.textContent = totalSesiones;
+            if (tasaConversionEl) tasaConversionEl.textContent = tasaConversion + '%';
+            if (totalMensajesEl) totalMensajesEl.textContent = totalMensajes.toLocaleString();
+            if (promedioMensajesEl) promedioMensajesEl.textContent = `↑ ${promedioMensajes} por sesión`;
+            if (promedioPasajerosEl) promedioPasajerosEl.textContent = promedioPasajeros;
+            if (ventasCerradasEl) ventasCerradasEl.textContent = vendidos;
+            if (porcentajeVentasEl) porcentajeVentasEl.textContent = `${tasaConversion}% del total`;
+            if (agenteTopEl) agenteTopEl.textContent = agenteTop || '-';
+            if (ventasAgenteTopEl) ventasAgenteTopEl.textContent = agenteTop ? `${agenteVentas[agenteTop]} ventas` : '-';
+        }
+
+        // Helper function to get CSS variable value
+        function getCSSVariable(varName) {
+            return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+        }
+
+        // Create Charts Config
+        function getChartConfig() {
+            const isMobile = window.innerWidth < 640;
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: getCSSVariable('--foreground'),
+                            font: {
+                                family: 'DM Sans',
+                                size: isMobile ? 10 : 12
+                            },
+                            padding: isMobile ? 10 : 15,
+                            boxWidth: isMobile ? 12 : 15
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: { 
+                            color: getCSSVariable('--muted-foreground'),
+                            font: { size: isMobile ? 10 : 12 }
+                        },
+                        grid: { color: getCSSVariable('--border') },
+                        border: { display: false }
+                    },
+                    x: {
+                        ticks: { 
+                            color: getCSSVariable('--muted-foreground'),
+                            font: { size: isMobile ? 10 : 12 },
+                            maxRotation: isMobile ? 45 : 0,
+                            minRotation: isMobile ? 45 : 0
+                        },
+                        grid: { color: getCSSVariable('--border') },
+                        border: { display: false }
+                    }
+                },
+                borderRadius: 8,
+                borderWidth: 0
+            };
+        }
+
+        // Sessions by Date Chart (Last 7 days)
+        function createSesionesFechaChart() {
+            // Get last 7 days
+            const today = new Date('2026-01-31');
+            const last7Days = [];
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                last7Days.push(date);
+            }
+            
+            const dateLabels = last7Days.map(d => `${d.getDate()}/${d.getMonth() + 1}`);
+            const dateCounts = last7Days.map(date => {
+                return filteredChartData.filter(d => {
+                    const [day, month, year] = d.Fecha_contacto.split('/');
+                    const dataDate = new Date(year, month - 1, day);
+                    return dataDate.toDateString() === date.toDateString();
+                }).length;
+            });
+            
+            const chartId = 'chartSesionesFecha';
+            if (chartInstances[chartId]) {
+                chartInstances[chartId].destroy();
+            }
+            chartInstances[chartId] = new Chart(document.getElementById(chartId), {
+                type: 'line',
+                data: {
+                    labels: dateLabels,
+                    datasets: [{
+                        label: 'Sesiones',
+                        data: dateCounts,
+                        borderColor: getCSSVariable('--chart-1'),
+                        backgroundColor: getCSSVariable('--chart-1').replace(')', ' / 0.1)'),
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: getCSSVariable('--chart-1'),
+                        pointBorderColor: getCSSVariable('--card'),
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    ...getChartConfig(),
+                    plugins: {
+                        ...getChartConfig().plugins,
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        // Heatmap for Hours - 0-24h
+        function createHeatmap() {
+            const hours = Array.from({length: 24}, (_, i) => i); // 0 to 23
+            const heatmapData = hours.map(hour => {
+                return filteredChartData.filter(d => parseInt(d.Hora_contacto) === hour).length;
+            });
+            
+            const maxCount = Math.max(...heatmapData, 1);
+            
+            const container = document.getElementById('heatmapContainer');
+            container.innerHTML = `
+                <div class="flex flex-col gap-3">
+                    <div class="grid grid-cols-4 sm:grid-cols-6 gap-1.5 sm:gap-2">
+                        ${hours.map((hour, idx) => {
+                            const count = heatmapData[idx];
+                            const intensity = count / maxCount;
+                            const bgColor = count === 0 
+                                ? 'var(--muted)' 
+                                : `color-mix(in oklch, var(--chart-1) ${intensity * 100}%, var(--muted))`;
+                            const hourLabel = hour.toString().padStart(2, '0');
+                            return `
+                                <div class="heatmap-cell flex flex-col items-center justify-center p-1.5 sm:p-2 rounded-lg" 
+                                     style="background: ${bgColor}; border: 1px solid var(--border);"
+                                     title="${count} consultas a las ${hourLabel}:00">
+                                    <div class="text-[10px] sm:text-xs font-semibold text-muted">${hourLabel}h</div>
+                                    <div class="text-sm sm:text-lg font-bold text-foreground">${count}</div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    <div class="flex items-center justify-center gap-1 sm:gap-2 text-[10px] sm:text-xs mt-1 text-muted">
+                        <span>Menos</span>
+                        <div class="flex gap-0.5 sm:gap-1">
+                            ${[0.2, 0.4, 0.6, 0.8, 1.0].map(intensity => {
+                                const bgColor = `color-mix(in oklch, var(--chart-1) ${intensity * 100}%, var(--muted))`;
+                                return `<div style="width: 12px; height: 12px; background: ${bgColor}; border-radius: 3px; border: 1px solid var(--border);" class="sm:w-4 sm:h-4 sm:rounded"></div>`;
+                            }).join('')}
+                        </div>
+                        <span>Más</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Cierre Conversacion Chart
+        function createCierreChart() {
+            const cierreData = {};
+            filteredChartData.forEach(d => {
+                cierreData[d.Cierre_conversacion] = (cierreData[d.Cierre_conversacion] || 0) + 1;
+            });
+            
+            // Ordenar labels y asignar colores correctamente
+            const labels = Object.keys(cierreData);
+            const data = labels.map(label => cierreData[label]);
+            
+            // Mapear colores según el estado (colores suaves)
+            const colorMap = {
+                'Vendido': '#059669',      // Verde suave
+                'No Vendido': 'rgb(239, 68, 68)',   // Rojo suave
+                'Potable': '#FFE302',      // Amarillo suave
+                'No Potable': '#8C8C8C'        // Gris
+            };
+            
+            const backgroundColor = labels.map(label => colorMap[label] || getCSSVariable('--muted'));
+            
+            const chartId = 'chartCierreConversacion';
+            if (chartInstances[chartId]) {
+                chartInstances[chartId].destroy();
+            }
+            chartInstances[chartId] = new Chart(document.getElementById(chartId), {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: backgroundColor,
+                        borderWidth: 0,
+                        borderRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: getCSSVariable('--foreground'),
+                                font: { family: 'DM Sans', size: 11 },
+                                padding: 15
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+
+        // Agentes Chart - Vendido vs No Vendido
+        function createAgentesChart() {
+            const agentesData = {};
+            filteredChartData.forEach(d => {
+                if (!agentesData[d.Agente]) {
+                    agentesData[d.Agente] = { vendidos: 0, noVendidos: 0 };
+                }
+                if (d.Cierre_conversacion === 'Vendido') {
+                    agentesData[d.Agente].vendidos++;
+                } else {
+                    // Agrupa No Vendido, No Potable y Potable como "No Vendidos"
+                    agentesData[d.Agente].noVendidos++;
+                }
+            });
+            
+            const chartId = 'chartAgentes';
+            if (chartInstances[chartId]) {
+                chartInstances[chartId].destroy();
+            }
+            chartInstances[chartId] = new Chart(document.getElementById(chartId), {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(agentesData),
+                    datasets: [
+                        {
+                            label: 'Vendidos',
+                            data: Object.values(agentesData).map(d => d.vendidos),
+                            backgroundColor: '#059669',
+                            borderWidth: 0,
+                            borderRadius: 8
+                        },
+                        {
+                            label: 'No Vendidos',
+                            data: Object.values(agentesData).map(d => d.noVendidos),
+                            backgroundColor: '#EF4444',
+                            borderWidth: 0,
+                            borderRadius: 8
+                        }
+                    ]
+                },
+                options: getChartConfig()
+            });
+        }
+
+        // Destinos Chart
+        function createDestinosChart() {
+            const destinosData = {};
+            filteredChartData.forEach(d => {
+                destinosData[d.Destino] = (destinosData[d.Destino] || 0) + 1;
+            });
+            
+            const chartId = 'chartDestinos';
+            if (chartInstances[chartId]) {
+                chartInstances[chartId].destroy();
+            }
+            chartInstances[chartId] = new Chart(document.getElementById(chartId), {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(destinosData),
+                    datasets: [{
+                        label: 'Consultas',
+                        data: Object.values(destinosData),
+                        backgroundColor: getCSSVariable('--chart-3'),
+                        borderWidth: 0,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    ...getChartConfig(),
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        // Tipo Paquete Chart - Solo Vuelo + Hotel y Solo Vuelo
+        function createTipoPaqueteChart() {
+            const tipoPaqueteData = {};
+            filteredChartData.forEach(d => {
+                // Solo contar Vuelo + Hotel y Solo Vuelo
+                if (d.Tipo_paquete === 'Vuelo + Hotel' || d.Tipo_paquete === 'Solo Vuelo') {
+                    tipoPaqueteData[d.Tipo_paquete] = (tipoPaqueteData[d.Tipo_paquete] || 0) + 1;
+                }
+            });
+            
+            // Ordenar: Vuelo + Hotel primero, luego Solo Vuelo
+            const labels = ['Vuelo + Hotel', 'Solo Vuelo'].filter(p => tipoPaqueteData[p]);
+            const data = labels.map(p => tipoPaqueteData[p]);
+            
+            const chartId = 'chartTipoPaquete';
+            if (chartInstances[chartId]) {
+                chartInstances[chartId].destroy();
+            }
+            chartInstances[chartId] = new Chart(document.getElementById(chartId), {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            getCSSVariable('--chart-1'),
+                            getCSSVariable('--chart-2')
+                        ],
+                        borderWidth: 0,
+                        borderRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: getCSSVariable('--foreground'),
+                                font: { family: 'DM Sans', size: 11 },
+                                padding: 15
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Prioridad Chart
+        function createPrioridadChart() {
+            const prioridades = ['Alta', 'Media', 'Baja'];
+            const vendidos = prioridades.map(p => 
+                filteredChartData.filter(d => d.Prioridad === p && d.Cierre_conversacion === 'Vendido').length
+            );
+            const potables = prioridades.map(p => 
+                filteredChartData.filter(d => d.Prioridad === p && d.Cierre_conversacion === 'Potable').length
+            );
+            const noVendidos = prioridades.map(p => 
+                filteredChartData.filter(d => d.Prioridad === p && (d.Cierre_conversacion === 'No Vendido' || d.Cierre_conversacion === 'No Potable')).length
+            );
+            
+            const chartId = 'chartPrioridad';
+            if (chartInstances[chartId]) {
+                chartInstances[chartId].destroy();
+            }
+            chartInstances[chartId] = new Chart(document.getElementById(chartId), {
+                type: 'bar',
+                data: {
+                    labels: prioridades,
+                    datasets: [
+                        {
+                            label: 'Vendidos',
+                            data: vendidos,
+                            backgroundColor: '#059669',  // Verde/azul claro - positivo
+                            borderWidth: 0,
+                            borderRadius: 8
+                        },
+                        {
+                            label: 'Potables',
+                            data: potables,
+                            backgroundColor: '#FFE302',  // Azul medio
+                            borderWidth: 0,
+                            borderRadius: 8
+                        },
+                        {
+                            label: 'No Vendidos',
+                            data: noVendidos,
+                            backgroundColor: '#EF4444',  // Rojo - negativo
+                            borderWidth: 0,
+                            borderRadius: 8
+                        }
+                    ]
+                },
+                options: {
+                    ...getChartConfig(),
+                    scales: {
+                        ...getChartConfig().scales,
+                        x: { stacked: true, ...getChartConfig().scales.x },
+                        y: { stacked: true, ...getChartConfig().scales.y }
+                    }
+                }
+            });
+        }
+
+        // Familiar Chart
+        function createFamiliarChart() {
+            const totalAdultos = filteredChartData.reduce((sum, d) => sum + parseInt(d.Cantidad_adultos), 0);
+            const totalNinos = filteredChartData.reduce((sum, d) => sum + parseInt(d.Cantidad_niños), 0);
+            
+            const chartId = 'chartFamiliar';
+            if (chartInstances[chartId]) {
+                chartInstances[chartId].destroy();
+            }
+            chartInstances[chartId] = new Chart(document.getElementById(chartId), {
+                type: 'pie',
+                data: {
+                    labels: ['Adultos', 'Niños'],
+                    datasets: [{
+                        data: [totalAdultos, totalNinos],
+                        backgroundColor: [
+                            "#059669",
+                            "#FFE302"
+                        ],
+                        borderWidth: 0,
+                        borderRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: getCSSVariable('--foreground'),
+                                font: { family: 'DM Sans', size: 14 },
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Prioridad Distribucion Chart
+        function createPrioridadDistribucionChart() {
+            const prioridadData = {};
+            filteredChartData.forEach(d => {
+                prioridadData[d.Prioridad] = (prioridadData[d.Prioridad] || 0) + 1;
+            });
+            
+            // Ordenar labels: Alta, Media, Baja
+            const labels = ['Alta', 'Media', 'Baja'].filter(p => prioridadData[p]);
+            const data = labels.map(p => prioridadData[p]);
+            
+            // Mapear colores: Alta = azul oscuro, Media = azul medio, Baja = azul claro
+            const colorMap = {
+                'Alta': "#059669",    // Azul oscuro
+                'Media': "#FFE302",    // Azul medio
+                'Baja': "#8C8C8C"      // Azul claro/verde
+            };
+            
+            const backgroundColor = labels.map(label => colorMap[label] || getCSSVariable('--muted'));
+            
+            const chartId = 'chartPrioridadDistribucion';
+            if (chartInstances[chartId]) {
+                chartInstances[chartId].destroy();
+            }
+            chartInstances[chartId] = new Chart(document.getElementById(chartId), {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: backgroundColor,
+                        borderWidth: 0,
+                        borderRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: getCSSVariable('--foreground'),
+                                font: { family: 'DM Sans', size: 14 },
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Calendar Heatmap
+        function createCalendarHeatmap() {
+            // Detect month from filtered data
+            let detectedMonth = '01';
+            let monthName = 'Enero';
+            let daysInMonth = 31;
+            
+            if (filteredChartData.length > 0) {
+                const firstDate = filteredChartData[0].Fecha_contacto;
+                const [, month] = firstDate.split('/');
+                detectedMonth = month;
+                
+                // Get all months in filtered data to determine which month to show
+                const monthsInData = [...new Set(filteredChartData.map(d => {
+                    const [, m] = d.Fecha_contacto.split('/');
+                    return m;
+                }))];
+                
+                if (monthsInData.length === 1) {
+                    detectedMonth = monthsInData[0];
+                } else {
+                    // If multiple months, use the most common one
+                    const monthCounts = {};
+                    filteredChartData.forEach(d => {
+                        const [, m] = d.Fecha_contacto.split('/');
+                        monthCounts[m] = (monthCounts[m] || 0) + 1;
+                    });
+                    detectedMonth = Object.keys(monthCounts).reduce((a, b) => 
+                        monthCounts[a] > monthCounts[b] ? a : b
+                    );
+                }
+                
+                const monthNames = { '01': 'Enero', '02': 'Febrero', '03': 'Marzo' };
+                monthName = monthNames[detectedMonth] || 'Enero';
+                
+                // Days in month
+                const daysInMonths = { '01': 31, '02': 28, '03': 31 };
+                daysInMonth = daysInMonths[detectedMonth] || 31;
+            }
+            
+            const dateCount = {};
+            
+            filteredChartData.forEach(d => {
+                const [day, month] = d.Fecha_contacto.split('/');
+                if (month === detectedMonth) {
+                    dateCount[parseInt(day)] = (dateCount[parseInt(day)] || 0) + 1;
+                }
+            });
+            
+            const maxCount = Math.max(...Object.values(dateCount), 1);
+            const container = document.getElementById('calendarHeatmap');
+            const monthAbbr = monthName.substring(0, 3);
+            
+            container.innerHTML = `
+                <div class="grid grid-cols-7 gap-1 sm:gap-2">
+                    ${Array.from({length: daysInMonth}, (_, i) => {
+                        const day = i + 1;
+                        const count = dateCount[day] || 0;
+                        const intensity = maxCount > 0 ? count / maxCount : 0;
+                        const bgColor = count === 0 
+                            ? 'var(--muted)' 
+                            : `color-mix(in oklch, var(--chart-1) ${intensity * 100}%, var(--muted))`;
+                        return `
+                            <div class="heatmap-cell flex flex-col items-center justify-center p-2 sm:p-4 rounded-lg sm:min-h-[80px]"
+                                 style="background: ${bgColor}; min-height: 60px; border: 1px solid var(--border); cursor: pointer;"
+                                 title="${count} sesiones el ${day} de ${monthName.toLowerCase()}">
+                                <div class="text-[10px] sm:text-xs mb-0.5 sm:mb-1 text-muted">${monthAbbr}</div>
+                                <div class="text-lg sm:text-2xl font-bold text-foreground">${day}</div>
+                                <div class="text-xs sm:text-sm mt-0.5 sm:mt-1 text-foreground">${count}</div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+            
+            // Update calendar title
+            const calendarTitle = document.getElementById('calendarTitle');
+            if (calendarTitle) {
+                calendarTitle.textContent = `Calendario de ${monthName} 2026`;
+            }
+        }
+
+        // Table Functions
+        function renderTable(page = 1) {
+            const startIndex = (page - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+            const pageData = filteredData.slice(startIndex, endIndex);
+            
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = pageData.map(row => `
+                <tr>
+                    <td class="font-semibold text-primary">${row.Nombre}</td>
+                    <td>${row.Destino}</td>
+                    <td>${row.Tipo_paquete}</td>
+                    <td>${row.Fecha_contacto}</td>
+                    <td>${row.Hora_contacto}:00</td>
+                    <td class="text-center">${row.Cantidad_pasajeros}</td>
+                    <td>
+                        <span class="badge badge-${row.Prioridad.toLowerCase()}">${row.Prioridad}</span>
+                    </td>
+                    <td class="text-center font-semibold">${row.Cantidad_mensajes}</td>
+                    <td>
+                        <span class="badge badge-${row.Cierre_conversacion.toLowerCase().replace(' ', '-')}">${row.Cierre_conversacion}</span>
+                    </td>
+                    <td>${row.Agente}</td>
+                    <td>
+                        <a href="${row.Link_chat}" target="_blank" class="text-chart-2 no-underline">
+                            Ver 🔗
+                        </a>
+                    </td>
+                </tr>
+            `).join('');
+            
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+            const container = document.getElementById('paginationControls');
+            
+            let pages = '';
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    pages += `
+                        <button onclick="changePage(${i})" class="${i === currentPage ? 'active' : ''}">
+                            ${i}
+                        </button>
+                    `;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    pages += '<button disabled>...</button>';
+                }
+            }
+            
+            container.innerHTML = `
+                <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                    ← Anterior
+                </button>
+                ${pages}
+                <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                    Siguiente →
+                </button>
+            `;
+        }
+
+        function changePage(page) {
+            const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                renderTable(page);
+            }
+        }
+
+        function filterTable() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filterCierre = document.getElementById('filterCierre').value;
+            const filterPrioridad = document.getElementById('filterPrioridad').value;
+            
+            filteredData = allData.filter(row => {
+                const matchesSearch = 
+                    row.Nombre.toLowerCase().includes(searchTerm) ||
+                    row.Destino.toLowerCase().includes(searchTerm) ||
+                    row.Numero_telefono.includes(searchTerm);
+                
+                const matchesCierre = !filterCierre || row.Cierre_conversacion === filterCierre;
+                const matchesPrioridad = !filterPrioridad || row.Prioridad === filterPrioridad;
+                
+                return matchesSearch && matchesCierre && matchesPrioridad;
+            });
+            
+            currentPage = 1;
+            renderTable(1);
+        }
+
+        function exportData() {
+            const csv = [
+                Object.keys(allData[0]).join(','),
+                ...allData.map(row => Object.values(row).join(','))
+            ].join('\n');
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'dashboard_data.csv';
+            a.click();
+        }
+
+        function refreshData() {
+            location.reload();
+        }
+
+        // Initialize Dashboard
+        window.addEventListener('DOMContentLoaded', () => {
+            populateFilterOptions();
+            applyChartFilters();
+            renderTable(1);
+        });
+    </script>
+</body>
+</html>
