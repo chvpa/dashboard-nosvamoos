@@ -4,4 +4,4 @@ export default function Home() {
   redirect("/dashboard");
 }
 
-// navigation
+// navigationnn
